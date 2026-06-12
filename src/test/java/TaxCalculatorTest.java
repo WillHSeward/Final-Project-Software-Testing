@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaxCalculatorTest {
 
     @Test
+    void constructor_coversDefaultConstructor() {
+        assertNotNull(new TaxCalculator());
+    }
+
+    @Test
     void calculateTax_IL_sixPercent() {
         assertEquals(6.00, TaxCalculator.calculateTax("IL", 100.00), 0.001);
     }

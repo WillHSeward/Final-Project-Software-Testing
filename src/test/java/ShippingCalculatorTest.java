@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShippingCalculatorTest {
 
     @Test
+    void constructor_coversDefaultConstructor() {
+        assertNotNull(new ShippingCalculator());
+    }
+
+    @Test
     void standard_subtotalBelowThreshold_costs10() {
         assertEquals(10.00, ShippingCalculator.calculateShipping(ShippingCalculator.STANDARD, 30.00));
     }

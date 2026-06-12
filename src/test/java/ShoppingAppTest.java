@@ -6,6 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShoppingAppTest {
 
     private final PrintStream originalOut = System.out;
+
+    @Test
+    void constructor_coversDefaultConstructor() {
+        assertNotNull(new ShoppingApp());
+    }
     private final InputStream originalIn = System.in;
     private ByteArrayOutputStream outContent;
 
