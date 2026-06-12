@@ -3,16 +3,17 @@ import java.util.Scanner;
 
 public class ShoppingApp {
 
-    private static final double MIN_PURCHASE = 1.00;
-    private static final double MAX_PURCHASE = 99999.99;
+    static final double MIN_PURCHASE = 1.00;
+    static final double MAX_PURCHASE = 99999.99;
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        run(new Scanner(System.in));
+    }
 
+    public static void run(Scanner scanner) {
         System.out.println("=== Welcome to the Shopping Application ===");
         System.out.println();
 
-        // Collect customer information
         System.out.print("Enter your name: ");
         String name = scanner.nextLine().trim();
 
@@ -54,10 +55,9 @@ public class ShoppingApp {
             }
         }
 
-        scanner.close();
     }
 
-    private static String promptState(Scanner scanner) {
+    static String promptState(Scanner scanner) {
         while (true) {
             System.out.print("Enter your state abbreviation (e.g. IL, CA, NY, TX): ");
             String state = scanner.nextLine().trim();
@@ -68,7 +68,7 @@ public class ShoppingApp {
         }
     }
 
-    private static String promptShipping(Scanner scanner) {
+    static String promptShipping(Scanner scanner) {
         while (true) {
             System.out.println("Select a shipping option:");
             System.out.println("  1. Standard ($10.00, free if subtotal > $50)");
@@ -84,7 +84,7 @@ public class ShoppingApp {
         }
     }
 
-    private static void printMenu() {
+    static void printMenu() {
         System.out.println();
         System.out.println("--- Cart Menu ---");
         System.out.println("1. Add item to cart");
@@ -96,7 +96,7 @@ public class ShoppingApp {
         System.out.print("Select an option: ");
     }
 
-    private static void addItem(Scanner scanner, ShoppingCart cart) {
+    static void addItem(Scanner scanner, ShoppingCart cart) {
         System.out.print("Enter item name: ");
         String itemName = scanner.nextLine().trim();
         if (itemName.isEmpty()) {
@@ -105,11 +105,7 @@ public class ShoppingApp {
         }
 
         double price = promptPrice(scanner);
-        if (price < 0) return;
-
         int quantity = promptQuantity(scanner);
-        if (quantity < 0) return;
-
         double itemTotal = price * quantity;
 
         if (itemTotal < MIN_PURCHASE) {
@@ -125,13 +121,12 @@ public class ShoppingApp {
             return;
         }
 
-        CartItem newItem = new CartItem(itemName, price, quantity);
-        cart.addItem(newItem);
+        cart.addItem(new CartItem(itemName, price, quantity));
         System.out.printf("'%s' added to cart. You now have %d item(s) in your cart.%n",
                 itemName, cart.getTotalItemCount());
     }
 
-    private static double promptPrice(Scanner scanner) {
+    static double promptPrice(Scanner scanner) {
         while (true) {
             System.out.print("Enter unit price ($): ");
             String input = scanner.nextLine().trim();
@@ -148,7 +143,7 @@ public class ShoppingApp {
         }
     }
 
-    private static int promptQuantity(Scanner scanner) {
+    static int promptQuantity(Scanner scanner) {
         while (true) {
             System.out.print("Enter quantity: ");
             String input = scanner.nextLine().trim();
@@ -165,7 +160,7 @@ public class ShoppingApp {
         }
     }
 
-    private static void showTotal(ShoppingCart cart) {
+    static void showTotal(ShoppingCart cart) {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
@@ -184,7 +179,7 @@ public class ShoppingApp {
         System.out.printf("  Total    : $%.2f%n", total);
     }
 
-    private static void showCart(ShoppingCart cart) {
+    static void showCart(ShoppingCart cart) {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
@@ -198,7 +193,7 @@ public class ShoppingApp {
         System.out.printf("Total items in cart: %d%n", cart.getTotalItemCount());
     }
 
-    private static void editQuantity(Scanner scanner, ShoppingCart cart) {
+    static void editQuantity(Scanner scanner, ShoppingCart cart) {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
@@ -220,13 +215,8 @@ public class ShoppingApp {
         }
 
         int newQty = promptQuantity(scanner);
-        if (newQty < 0) return;
-
         CartItem item = cart.getItems().get(index);
-        double newItemTotal = item.getPricePerUnit() * newQty;
-
-        double subtotalWithoutItem = cart.getRawSubtotal() - item.getSubtotal();
-        double projectedSubtotal = subtotalWithoutItem + newItemTotal;
+        double projectedSubtotal = (cart.getRawSubtotal() - item.getSubtotal()) + (item.getPricePerUnit() * newQty);
 
         if (projectedSubtotal > MAX_PURCHASE) {
             System.out.printf("Error: New quantity would bring subtotal to $%.2f, exceeding the maximum of $%.2f.%n",
@@ -234,15 +224,11 @@ public class ShoppingApp {
             return;
         }
 
-        if (projectedSubtotal < MIN_PURCHASE && !cart.getItems().isEmpty()) {
-            // Only flag if this is the only item or would cause total to drop below min
-        }
-
         cart.editQuantity(index, newQty);
         System.out.printf("Quantity for '%s' updated to %d.%n", item.getName(), newQty);
     }
 
-    private static void removeItem(Scanner scanner, ShoppingCart cart) {
+    static void removeItem(Scanner scanner, ShoppingCart cart) {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
@@ -267,7 +253,7 @@ public class ShoppingApp {
         System.out.printf("'%s' has been removed from your cart.%n", removedName);
     }
 
-    private static void checkout(ShoppingCart cart) {
+    static void checkout(ShoppingCart cart) {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty. Nothing to checkout.");
             return;
